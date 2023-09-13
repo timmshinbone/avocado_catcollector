@@ -1,6 +1,6 @@
 from django.shortcuts import render
 # we need to import our class based views
-from django.views.generic.edit import CreateView
+from django.views.generic.edit import CreateView, UpdateView, DeleteView
 # in order to use the model, we have to import
 from .models import Cat
 
@@ -45,3 +45,14 @@ class CatCreate(CreateView):
     # fields = ['name', 'breed', 'description', 'age']
     # special string pattern for a successful create
     # success_url = '/cats/{cat_id}'
+
+# UpdateView, very similar to CreateView, needs model and fields
+class CatUpdate(UpdateView):
+    model = Cat
+    # let's make it so you cant rename a cat
+    fields = ['breed', 'description', 'age']
+
+class CatDelete(DeleteView):
+    model = Cat
+    # instead of fields or using the absolure_url, we just use a success_url
+    success_url = '/cats'
