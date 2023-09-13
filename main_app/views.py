@@ -1,8 +1,9 @@
-from django.shortcuts import render
+from django.shortcuts import render, redirect
 # we need to import our class based views
 from django.views.generic.edit import CreateView, UpdateView, DeleteView
 # in order to use the model, we have to import
 from .models import Cat
+from .forms import FeedingForm
 
 # These are the old cats, now we use models.
 # cats = [
@@ -33,10 +34,25 @@ def cats_index(request):
 def cats_detail(request, cat_id):
     # find the cat
     cat = Cat.objects.get(id=cat_id)
-    # to check this view function before we have html, use a print!
-    # print('this is the cat django found')
-    # print(cat)
-    return render(request, 'cats/detail.html', { 'cat': cat })
+    # instantiate a feeding form to be rendered in the template
+    feeding_form = FeedingForm()
+    return render(request, 'cats/detail.html', { 'cat': cat, 'feeding_form': feeding_form })
+
+# View for adding a feeding to a cat
+def add_feeding(request, cat_id):
+    # create a ModelForm instance using the data in request.POST
+    form = FeedingForm(request.POST)
+    # we need to make sure the form data is valid
+    if form.is_valid():
+        # then we need to add/save the feeding
+        # we dont want to save the feeding until the cat is associated
+        new_feeding = form.save(commit=False)
+        # associate the feeding with a cat
+        new_feeding.cat_id = cat_id
+        # save the feeding 
+        new_feeding.save()
+    # finally, redirect back to the detail page(which refreshes the info)
+    return redirect('detail', cat_id=cat_id)
 
 # Now we can inherit from the CreateView to make our cats create view
 class CatCreate(CreateView):
