@@ -1,5 +1,6 @@
 from django.shortcuts import render
-
+# we need to import our class based views
+from django.views.generic.edit import CreateView
 # in order to use the model, we have to import
 from .models import Cat
 
@@ -36,3 +37,11 @@ def cats_detail(request, cat_id):
     # print('this is the cat django found')
     # print(cat)
     return render(request, 'cats/detail.html', { 'cat': cat })
+
+# Now we can inherit from the CreateView to make our cats create view
+class CatCreate(CreateView):
+    model = Cat
+    fields = '__all__'
+    # fields = ['name', 'breed', 'description', 'age']
+    # special string pattern for a successful create
+    # success_url = '/cats/{cat_id}'
