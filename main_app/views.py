@@ -4,8 +4,13 @@ from django.views.generic.edit import CreateView, UpdateView, DeleteView
 from django.views.generic import ListView
 from django.views.generic.detail import DetailView
 # in order to use the model, we have to import
-from .models import Cat, Toy
+from .models import Cat, Toy, Photo
 from .forms import FeedingForm
+
+# for adding photos we need more imports
+import uuid
+import boto3
+import os
 
 # These are the old cats, now we use models.
 # cats = [
@@ -120,4 +125,31 @@ def assoc_toy(request, cat_id, toy_id):
 def unassoc_toy(request, cat_id, toy_id):
     # to make the association, we target the cat and pass the toy id
     Cat.objects.get(id=cat_id).toys.remove(toy_id)
+    return redirect('detail', cat_id=cat_id)
+
+# adding photos via s3
+def add_photo(request, cat_id):
+    # we need a photo file (named via the 'name' attribute in the form field)
+    photo_file = request.FILES.get('photo-file', None)
+    AWS_ACCESS_KEY = os.environ['AWS_ACCESS_KEY']
+    AWS_SECRET_ACCESS_KEY = os.environ['AWS_SECRET_ACCESS_KEY']
+    # check if we actually got a photo, do something if we did, do something else if we didnt
+    if photo_file:
+        # here's where we'll do our S3 stuff
+        # target s3
+        s3 = boto3.client('s3', aws_access_key_id=AWS_ACCESS_KEY, aws_secret_access_key=AWS_SECRET_ACCESS_KEY)
+        # we need a unique name for all of our files, so we'll use uuid to generate one automatically
+        key = uuid.uuid4().hex[:6] + photo_file.name[photo_file.name.rfind('.'):]
+        # just in case something goes wrong
+        try:
+            bucket = os.environ['S3_BUCKET']
+            s3.upload_fileobj(photo_file, bucket, key)
+            # we'll build the entire url string
+            url = f'{os.environ["S3_BASE_URL"]}{bucket}/{key}'
+            # we create the photo and associate it with the cat
+            Photo.objects.create(url=url, cat_id=cat_id)
+        except Exception as e:
+            print('An error occured uploading to s3')
+            print(e)
+
     return redirect('detail', cat_id=cat_id)

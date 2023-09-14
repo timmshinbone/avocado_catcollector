@@ -15,6 +15,8 @@ urlpatterns = [
     path('cats/<int:pk>/update/', views.CatUpdate.as_view(), name='cats_update'),
     path('cats/<int:pk>/delete/', views.CatDelete.as_view(), name='cats_delete'),
     path('cats/<int:cat_id>/add_feeding/', views.add_feeding, name='add_feeding'),
+    # url for s3 upload
+    path('cats/<int:cat_id>/add_photo', views.add_photo, name='add_photo'),
     # we need several urls for our Toys to work
     # we'll need a list, detail, create, update, delete
     path('toys/', views.ToyList.as_view(), name='toys_index'),
