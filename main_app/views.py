@@ -39,9 +39,9 @@ def cats_detail(request, cat_id):
     # instantiate a feeding form to be rendered in the template
     feeding_form = FeedingForm()
     id_list = cat.toys.all().values_list('id')
-    print(f'The id_list for the cat toys: {id_list}')
+    # print(f'The id_list for the cat toys: {id_list}')
     toys_cat_doesnt_have = Toy.objects.exclude(id__in=id_list)
-    print(f'the toys cat dont got: {toys_cat_doesnt_have}')
+    # print(f'the toys cat dont got: {toys_cat_doesnt_have}')
     return render(request, 'cats/detail.html', { 'cat': cat, 'feeding_form': feeding_form, 'toys': toys_cat_doesnt_have })
 
 # View for adding a feeding to a cat
@@ -109,3 +109,15 @@ class ToyUpdate(UpdateView):
 class ToyDelete(DeleteView):
     model = Toy
     success_url = '/toys/'
+
+# adds toy to cat
+def assoc_toy(request, cat_id, toy_id):
+    # to make the association, we target the cat and pass the toy id
+    Cat.objects.get(id=cat_id).toys.add(toy_id)
+    return redirect('detail', cat_id=cat_id)
+
+# removes toy from cat
+def unassoc_toy(request, cat_id, toy_id):
+    # to make the association, we target the cat and pass the toy id
+    Cat.objects.get(id=cat_id).toys.remove(toy_id)
+    return redirect('detail', cat_id=cat_id)
