@@ -1,8 +1,10 @@
 from django.shortcuts import render, redirect
 # we need to import our class based views
 from django.views.generic.edit import CreateView, UpdateView, DeleteView
+from django.views.generic import ListView
+from django.views.generic.detail import DetailView
 # in order to use the model, we have to import
-from .models import Cat
+from .models import Cat, Toy
 from .forms import FeedingForm
 
 # These are the old cats, now we use models.
@@ -36,7 +38,11 @@ def cats_detail(request, cat_id):
     cat = Cat.objects.get(id=cat_id)
     # instantiate a feeding form to be rendered in the template
     feeding_form = FeedingForm()
-    return render(request, 'cats/detail.html', { 'cat': cat, 'feeding_form': feeding_form })
+    id_list = cat.toys.all().values_list('id')
+    print(f'The id_list for the cat toys: {id_list}')
+    toys_cat_doesnt_have = Toy.objects.exclude(id__in=id_list)
+    print(f'the toys cat dont got: {toys_cat_doesnt_have}')
+    return render(request, 'cats/detail.html', { 'cat': cat, 'feeding_form': feeding_form, 'toys': toys_cat_doesnt_have })
 
 # View for adding a feeding to a cat
 def add_feeding(request, cat_id):
@@ -57,8 +63,8 @@ def add_feeding(request, cat_id):
 # Now we can inherit from the CreateView to make our cats create view
 class CatCreate(CreateView):
     model = Cat
-    fields = '__all__'
-    # fields = ['name', 'breed', 'description', 'age']
+    # fields = '__all__'
+    fields = ['name', 'breed', 'description', 'age']
     # special string pattern for a successful create
     # success_url = '/cats/{cat_id}'
 
@@ -72,3 +78,34 @@ class CatDelete(DeleteView):
     model = Cat
     # instead of fields or using the absolure_url, we just use a success_url
     success_url = '/cats'
+
+
+# Views for Toys
+
+# ToyList
+class ToyList(ListView):
+    model = Toy
+    template_name = 'toys/index.html'
+
+# ToyDetail
+class ToyDetail(DetailView):
+    model = Toy
+    template_name = 'toys/detail.html'
+
+# ToyCreate
+class ToyCreate(CreateView):
+    model = Toy
+    fields = ['name', 'color']
+
+    def form_valid(self, form):
+        return super().form_valid(form)
+    
+# ToyUpdate
+class ToyUpdate(UpdateView):
+    model = Toy
+    fields = ['name', 'color']
+
+# ToyDelete
+class ToyDelete(DeleteView):
+    model = Toy
+    success_url = '/toys/'

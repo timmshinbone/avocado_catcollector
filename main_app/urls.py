@@ -15,4 +15,12 @@ urlpatterns = [
     path('cats/<int:pk>/update/', views.CatUpdate.as_view(), name='cats_update'),
     path('cats/<int:pk>/delete/', views.CatDelete.as_view(), name='cats_delete'),
     path('cats/<int:cat_id>/add_feeding/', views.add_feeding, name='add_feeding'),
+    # we need several urls for our Toys to work
+    # we'll need a list, detail, create, update, delete
+    path('toys/', views.ToyList.as_view(), name='toys_index'),
+    path('toys/create/', views.ToyCreate.as_view(), name='toys_create'),
+    path('toys/<int:pk>/update/', views.ToyUpdate.as_view(), name='toys_update'),
+    path('toys/<int:pk>/delete/', views.ToyDelete.as_view(), name='toys_delete'),
+    path('toys/<int:pk>/', views.ToyDetail.as_view(), name='toys_detail'),
+    # eventually, once it's all set up, we'll add two views to handle the relationship between a cat and a toy.
 ]
