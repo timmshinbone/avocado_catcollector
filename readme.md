@@ -1,1 +1,5 @@
-avocado cat collector!
+# Avocado Cat Collector!
+
+### Collect Cats!
+### Feed Cats!
+### Give Cats Toys!
