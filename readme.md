@@ -119,13 +119,12 @@ Check out `main_app/models.py` and `main_app/views.py` for the core OOP implemen
 
 ---
 ## Deployment
-This project is fully deployed and accessible live at <a href="https://avogatocollector.onrender.com/" 
-           target="_blank">https://avogatocollector.onrender.com/</a>, hosted on Render’s scalable platform. The app leverages a Neon SQL database for persistent storage, ensuring reliable data management for cat profiles, toys, and feeding records.
+This project is fully deployed and accessible live at <a href="https://avogatocollector.onrender.com/" target="_blank">https://avogatocollector.onrender.com/</a>, hosted on Render’s scalable platform. The app leverages a Neon SQL database for persistent storage, ensuring reliable data management for cat profiles, toys, and feeding records.
 
 - **Neon SQL Database**: Integrated as the backend database using PostgreSQL, Neon provides a serverless, cloud-native solution. The Django ORM connects seamlessly via the `DATABASES` setting in `settings.py`, abstracting connection pooling and scaling. This setup supports efficient queries like `Cat.objects.all()` while keeping deployment lightweight.
 
 - **Render Hosting**: Deployed on Render, the app benefits from automatic scaling and a straightforward CI/CD pipeline tied to this GitHub repo. Environment variables (e.g., `DATABASE_URL`, `SECRET_KEY`) are managed securely in Render’s dashboard, aligning with Django’s best practices.
 
-Visit the live site [here](https://avogatocollector.onrender.com/){:target="_blank"} to see the app in action!
+Visit the live site <a href="https://avogatocollector.onrender.com/" target="_blank">here</a> to see the app in action!
 
 Built with Python, Django, and a love for cats 🐱.
